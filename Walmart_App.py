@@ -129,8 +129,6 @@ def load_data():
         df['Month'] = df['Date'].dt.month
         df['Day'] = df['Date'].dt.day
         df['Quarter'] = df['Date'].dt.quarter
-        # Include WeekOfYear here for consistency if it was part of training
-        df['WeekOfYear'] = df['Date'].dt.isocalendar().week.astype(int)
         df['IsWeekend'] = df['Date'].dt.dayofweek.isin([5, 6]).astype(int)
     
     return df
@@ -293,7 +291,7 @@ if page == "🏠 Home":
                       '✅ Complete', '✅ Complete', '✅ Complete'],
             'Duration': ['Week 1', 'Week 1-2', 'Week 2', 'Week 3', 'Week 3-4', 'Week 4']
         })
-        st.dataframe(timeline_data, width='stretch', hide_index=True)
+        st.dataframe(timeline_data, use_container_width=True, hide_index=True)
         
     else:
         st.error("⚠️ Unable to load data or model. Please ensure all required files are present.")
@@ -319,11 +317,11 @@ elif page == "📊 Data Exploration":
         
         # Data Preview
         st.markdown("### 🔍 Data Preview")
-        st.dataframe(df.head(10), width='stretch')
+        st.dataframe(df.head(10), use_container_width=True)
         
         # Statistical Summary
         st.markdown("### 📈 Statistical Summary")
-        st.dataframe(df.describe(), width='stretch')
+        st.dataframe(df.describe(), use_container_width=True)
         
         # Visualizations
         st.markdown("## 📊 Interactive Visualizations")
@@ -339,7 +337,7 @@ elif page == "📊 Data Exploration":
                          labels={'Weekly_Sales': 'Sales ($)', 'Date': 'Date'})
             fig.update_traces(line_color='#667eea', line_width=1)
             fig.update_layout(height=500, hovermode='x unified')
-            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig, use_container_width=True)
             
             # Monthly average
             monthly_sales = df.groupby(df['Date'].dt.to_period('M'))['Weekly_Sales'].mean().reset_index()
@@ -350,7 +348,7 @@ elif page == "📊 Data Exploration":
                          labels={'Weekly_Sales': 'Average Sales ($)', 'Date': 'Month'})
             fig2.update_traces(marker_color='#764ba2')
             fig2.update_layout(height=400)
-            st.plotly_chart(fig2, width='stretch')
+            st.plotly_chart(fig2, use_container_width=True)
         
         with tab2:
             st.markdown("### Store Performance Analysis")
@@ -363,7 +361,7 @@ elif page == "📊 Data Exploration":
                          labels={'Weekly_Sales': 'Average Sales ($)', 'Store': 'Store Number'})
             fig3.update_traces(marker_color='#f093fb')
             fig3.update_layout(height=500)
-            st.plotly_chart(fig3, width='stretch')
+            st.plotly_chart(fig3, use_container_width=True)
             
             # Store comparison
             selected_stores = st.multiselect(
@@ -378,7 +376,7 @@ elif page == "📊 Data Exploration":
                               title='Sales Comparison - Selected Stores',
                               labels={'Weekly_Sales': 'Sales ($)', 'Date': 'Date'})
                 fig4.update_layout(height=500)
-                st.plotly_chart(fig4, width='stretch')
+                st.plotly_chart(fig4, use_container_width=True)
         
         with tab3:
             st.markdown("### Feature Distributions")
@@ -396,7 +394,7 @@ elif page == "📊 Data Exploration":
                                    labels={feature_col: feature_col})
                 fig5.update_traces(marker_color='#667eea')
                 fig5.update_layout(height=400)
-                st.plotly_chart(fig5, width='stretch')
+                st.plotly_chart(fig5, use_container_width=True)
             
             with col2:
                 fig6 = px.box(df, y=feature_col,
@@ -404,7 +402,7 @@ elif page == "📊 Data Exploration":
                              labels={feature_col: feature_col})
                 fig6.update_traces(marker_color='#764ba2')
                 fig6.update_layout(height=400)
-                st.plotly_chart(fig6, width='stretch')
+                st.plotly_chart(fig6, use_container_width=True)
             
             # Holiday vs Non-Holiday
             st.markdown("### Holiday Impact Analysis")
@@ -416,7 +414,7 @@ elif page == "📊 Data Exploration":
                          labels={'Weekly_Sales': 'Average Sales ($)', 'Holiday_Flag': ''})
             fig7.update_traces(marker_color=['#667eea', '#f5576c'])
             fig7.update_layout(height=400)
-            st.plotly_chart(fig7, width='stretch')
+            st.plotly_chart(fig7, use_container_width=True)
         
         with tab4:
             st.markdown("### Feature Correlations")
@@ -435,7 +433,7 @@ elif page == "📊 Data Exploration":
                             color_continuous_scale='RdBu_r',
                             title='Feature Correlation Matrix')
             fig8.update_layout(height=600)
-            st.plotly_chart(fig8, width='stretch')
+            st.plotly_chart(fig8, use_container_width=True)
             
             # Correlation with target
             target_corr = corr_matrix['Weekly_Sales'].sort_values(ascending=False)[1:].reset_index()
@@ -446,7 +444,7 @@ elif page == "📊 Data Exploration":
                          labels={'Correlation': 'Correlation Coefficient', 'Feature': ''})
             fig9.update_traces(marker_color=['#4caf50' if x > 0 else '#f44336' for x in target_corr['Correlation']])
             fig9.update_layout(height=500)
-            st.plotly_chart(fig9, width='stretch')
+            st.plotly_chart(fig9, use_container_width=True)
     
     else:
         st.error("⚠️ Unable to load data. Please ensure 'Walmart.csv' is available.")
@@ -493,7 +491,7 @@ elif page == "🤖 Model Performance":
                                'Overfitting': '{:.4f}',
                                'Time (s)': '{:.2f}'
                            }),
-            width='stretch',
+            use_container_width=True,
             hide_index=True
         )
         
@@ -515,7 +513,7 @@ elif page == "🤖 Model Performance":
                              labels={'CV_R2_Mean': 'CV R² Score', 'Model': ''})
                 fig1.update_traces(marker_color='#667eea')
                 fig1.update_layout(height=500)
-                st.plotly_chart(fig1, width='stretch')
+                st.plotly_chart(fig1, use_container_width=True)
             
             with col2:
                 # Test R² comparison
@@ -526,7 +524,7 @@ elif page == "🤖 Model Performance":
                              labels={'Test_R2': 'Test R² Score', 'Model': ''})
                 fig2.update_traces(marker_color='#764ba2')
                 fig2.update_layout(height=500)
-                st.plotly_chart(fig2, width='stretch')
+                st.plotly_chart(fig2, use_container_width=True)
             
             # RMSE comparison
             fig3 = px.bar(comparison_df.sort_values('Test_RMSE'),
@@ -535,7 +533,7 @@ elif page == "🤖 Model Performance":
                          labels={'Test_RMSE': 'Test RMSE ($)', 'Model': 'Model'})
             fig3.update_traces(marker_color='#f093fb')
             fig3.update_layout(height=400)
-            st.plotly_chart(fig3, width='stretch')
+            st.plotly_chart(fig3, use_container_width=True)
         
         with tab2:
             # Train vs Test R²
@@ -559,7 +557,7 @@ elif page == "🤖 Model Performance":
                 barmode='group',
                 height=500
             )
-            st.plotly_chart(fig4, width='stretch')
+            st.plotly_chart(fig4, use_container_width=True)
             
             # Overfitting score
             comparison_df_sorted = comparison_df.sort_values('Overfitting')
@@ -572,7 +570,7 @@ elif page == "🤖 Model Performance":
             fig5.add_hline(y=0.05, line_dash="dash", line_color="orange", 
                           annotation_text="Threshold (0.05)")
             fig5.update_layout(height=400)
-            st.plotly_chart(fig5, width='stretch')
+            st.plotly_chart(fig5, use_container_width=True)
             
             st.markdown("""
                 <div class='info-box'>
@@ -591,7 +589,7 @@ elif page == "🤖 Model Performance":
                          labels={'Training_Time': 'Time (seconds)', 'Model': 'Model'})
             fig6.update_traces(marker_color='#4caf50')
             fig6.update_layout(height=400)
-            st.plotly_chart(fig6, width='stretch')
+            st.plotly_chart(fig6, use_container_width=True)
             
             # Efficiency score (R² / Time)
             comparison_df['Efficiency'] = comparison_df['Test_R2'] / (comparison_df['Training_Time'] + 0.01)
@@ -601,7 +599,7 @@ elif page == "🤖 Model Performance":
                          labels={'Efficiency': 'Efficiency Score', 'Model': 'Model'})
             fig7.update_traces(marker_color='#ff9800')
             fig7.update_layout(height=400)
-            st.plotly_chart(fig7, width='stretch')
+            st.plotly_chart(fig7, use_container_width=True)
         
         # Model Details
         st.markdown("## 🔍 Best Model Details")
@@ -641,7 +639,7 @@ elif page == "🤖 Model Performance":
             'Feature': model_info['features'],
             'Index': range(len(model_info['features']))
         })
-        st.dataframe(features_df, width='stretch', hide_index=True)
+        st.dataframe(features_df, use_container_width=True, hide_index=True)
     
     else:
         st.error("⚠️ Unable to load model comparison data.")
@@ -675,40 +673,20 @@ elif page == "🔮 Make Predictions":
             with col2:
                 cpi = st.number_input("Consumer Price Index", min_value=100.0, max_value=250.0, value=211.0, step=0.1)
                 unemployment = st.number_input("Unemployment Rate (%)", min_value=2.0, max_value=15.0, value=8.0, step=0.1)
-                
-                # --- START CLEANER DATE INPUT ---
-                # Replacing Year, Month, Day inputs with a single date selector
-                prediction_date = st.date_input(
-                    "Select Date for Prediction",
-                    value=datetime(2012, 11, 15),
-                    min_value=datetime(2010, 1, 1),
-                    max_value=datetime(2025, 12, 31)
-                )
-                # --- END CLEANER DATE INPUT ---
-
+                year = st.number_input("Year", min_value=2010, max_value=2025, value=2012, step=1)
+                month = st.selectbox("Month", options=list(range(1, 13)), index=10)
+            
             with col3:
-                # Removed redundant inputs (Year, Month, Day, Quarter, IsWeekend)
-                st.markdown("**(Date features derived automatically from selected date)**")
+                day = st.number_input("Day", min_value=1, max_value=31, value=15, step=1)
+                quarter = st.selectbox("Quarter", options=[1, 2, 3, 4], index=3)
+                is_weekend = st.selectbox("Is Weekend?", options=[0, 1], 
+                                         format_func=lambda x: "No" if x == 0 else "Yes")
             
             st.markdown("<br>", unsafe_allow_html=True)
-            submit_button = st.form_submit_button("🔮 Predict Sales", width='stretch')
+            submit_button = st.form_submit_button("🔮 Predict Sales", use_container_width=True)
         
         if submit_button:
-            # --- START FIX: Feature Engineering for Prediction Input ---
-            # Create a DataFrame from the single date input
-            date_df = pd.DataFrame({'Date': [prediction_date]})
-            date_df['Date'] = pd.to_datetime(date_df['Date'])
-            
-            # Extract all required date features
-            date_df['Year'] = date_df['Date'].dt.year
-            date_df['Month'] = date_df['Date'].dt.month
-            date_df['Day'] = date_df['Date'].dt.day
-            date_df['Quarter'] = date_df['Date'].dt.quarter
-            # CRITICAL FIX: Add WeekOfYear
-            date_df['WeekOfYear'] = date_df['Date'].dt.isocalendar().week.astype(int)
-            date_df['IsWeekend'] = date_df['Date'].dt.dayofweek.isin([5, 6]).astype(int)
-            
-            # Prepare final input data by merging fixed features with manual inputs
+            # Prepare input data
             input_data = pd.DataFrame({
                 'Store': [store],
                 'Holiday_Flag': [holiday_flag],
@@ -716,11 +694,12 @@ elif page == "🔮 Make Predictions":
                 'Fuel_Price': [fuel_price],
                 'CPI': [cpi],
                 'Unemployment': [unemployment],
+                'Year': [year],
+                'Month': [month],
+                'Day': [day],
+                'Quarter': [quarter],
+                'IsWeekend': [is_weekend]
             })
-            
-            # Merge the engineered date features
-            input_data = pd.concat([input_data, date_df.drop(columns=['Date'])], axis=1)
-            # --- END FIX ---
             
             # Ensure columns match training features
             input_data = input_data[model_info['features']]
@@ -767,15 +746,12 @@ elif page == "🔮 Make Predictions":
                 'Feature': model_info['features'],
                 'Value': input_data.values[0]
             })
-            st.dataframe(input_summary, width='stretch', hide_index=True)
+            st.dataframe(input_summary, use_container_width=True, hide_index=True)
             
             # Recommendations
             st.markdown("### 💡 Insights")
             
             insights = []
-            # Use the calculated IsWeekend and derived Year/Month/Day
-            is_weekend_calc = input_data['IsWeekend'].iloc[0]
-            
             if holiday_flag == 1:
                 insights.append("🎉 Holiday weeks typically see increased sales.")
             if temperature < 40:
@@ -786,7 +762,7 @@ elif page == "🔮 Make Predictions":
                 insights.append("📉 High unemployment rate may impact consumer spending.")
             if fuel_price > 3.5:
                 insights.append("⛽ Elevated fuel prices might reduce discretionary spending.")
-            if is_weekend_calc == 1:
+            if is_weekend == 1:
                 insights.append("🛒 Weekend shopping patterns may differ from weekdays.")
             
             if insights:
@@ -808,9 +784,9 @@ elif page == "🔮 Make Predictions":
             try:
                 batch_data = pd.read_csv(uploaded_file)
                 st.markdown("### 📋 Uploaded Data Preview")
-                st.dataframe(batch_data.head(), width='stretch')
+                st.dataframe(batch_data.head(), use_container_width=True)
                 
-                if st.button("🔮 Generate Batch Predictions", width='stretch'):
+                if st.button("🔮 Generate Batch Predictions", use_container_width=True):
                     # Check if required features exist
                     required_features = model_info['features']
                     
@@ -819,10 +795,389 @@ elif page == "🔮 Make Predictions":
                         required_features = [f for f in required_features if f != 'Log_Weekly_Sales']
                         st.info("Note: Log_Weekly_Sales is not needed for predictions (it's the target variable)")
                     
-                    # --- START BATCH FIX: Feature Engineering for Batch Input ---
-                    # Check for 'Date' column and use it for feature engineering
-                    if 'Date' in batch_data.columns:
-                        batch_data['Date'] = pd.to_datetime(batch_data['Date'])
-                        batch_data['Year'] = batch_data['Date'].dt.year
-                        batch_data['Month'] = batch_data['Date'].dt.month
-                        batch_data['Day'] = batch_data['
+                    missing_cols = [col for col in required_features if col not in batch_data.columns]
+                    
+                    if missing_cols:
+                        st.error(f"❌ Missing required columns: {missing_cols}")
+                        st.info(f"Required columns: {required_features}")
+                        
+                        # Try to create missing columns
+                        st.warning("Attempting to create missing columns...")
+                        
+                        # Add WeekOfYear if missing
+                        if 'WeekOfYear' in missing_cols:
+                            if 'Date' in batch_data.columns:
+                                batch_data['Date'] = pd.to_datetime(batch_data['Date'])
+                                batch_data['WeekOfYear'] = batch_data['Date'].dt.isocalendar().week
+                                st.success("✓ Created WeekOfYear from Date column")
+                            elif 'Year' in batch_data.columns and 'Month' in batch_data.columns and 'Day' in batch_data.columns:
+                                # Create date from Year, Month, Day
+                                try:
+                                    batch_data['Date'] = pd.to_datetime(batch_data[['Year', 'Month', 'Day']])
+                                    batch_data['WeekOfYear'] = batch_data['Date'].dt.isocalendar().week
+                                    st.success("✓ Created WeekOfYear from Year/Month/Day")
+                                except:
+                                    # Default to mid-year week based on month
+                                    batch_data['WeekOfYear'] = ((batch_data['Month'] - 1) * 4) + 2
+                                    st.warning("⚠️ Estimated WeekOfYear from Month")
+                            else:
+                                # Default to mid-year week
+                                batch_data['WeekOfYear'] = 26
+                                st.warning("⚠️ Used default WeekOfYear (26)")
+                            missing_cols.remove('WeekOfYear')
+                        
+                        # Check again
+                        missing_cols = [col for col in required_features if col not in batch_data.columns]
+                        if missing_cols:
+                            st.error(f"❌ Still missing columns: {missing_cols}")
+                            st.info("Please ensure your CSV has these columns: " + ", ".join(required_features))
+                            st.stop()
+                    
+                    # Ensure columns match and are in correct order
+                    try:
+                        batch_data_input = batch_data[required_features]
+                        batch_scaled = scaler.transform(batch_data_input)
+                        batch_predictions = model.predict(batch_scaled)
+                        
+                        # Add predictions to dataframe
+                        batch_data['Predicted_Sales'] = batch_predictions
+                        
+                        st.markdown("### ✅ Predictions Complete!")
+                        st.dataframe(batch_data, use_container_width=True)
+                        
+                        # Download button
+                        csv = batch_data.to_csv(index=False)
+                        st.download_button(
+                            label="📥 Download Predictions",
+                            data=csv,
+                            file_name="walmart_predictions.csv",
+                            mime="text/csv",
+                            use_container_width=True
+                        )
+                        
+                        # Summary statistics
+                        st.markdown("### 📊 Batch Summary")
+                        col1, col2, col3, col4 = st.columns(4)
+                        with col1:
+                            st.metric("Total Predictions", len(batch_predictions))
+                        with col2:
+                            st.metric("Average Predicted Sales", f"${batch_predictions.mean():,.2f}")
+                        with col3:
+                            st.metric("Min Predicted Sales", f"${batch_predictions.min():,.2f}")
+                        with col4:
+                            st.metric("Max Predicted Sales", f"${batch_predictions.max():,.2f}")
+                    
+                    except Exception as e:
+                        st.error(f"❌ Error making predictions: {str(e)}")
+                        st.info("Debug info:")
+                        st.write("Required features:", required_features)
+                        st.write("Available columns:", batch_data.columns.tolist())
+                        st.write("Missing:", [f for f in required_features if f not in batch_data.columns])
+                    
+                    # Download button
+                    csv = batch_data.to_csv(index=False)
+                    st.download_button(
+                        label="📥 Download Predictions",
+                        data=csv,
+                        file_name="walmart_predictions.csv",
+                        mime="text/csv",
+                        use_container_width=True
+                    )
+                    
+                    # Summary statistics
+                    st.markdown("### 📊 Batch Summary")
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Predictions", len(batch_predictions))
+                    with col2:
+                        st.metric("Average Predicted Sales", f"${batch_predictions.mean():,.2f}")
+                    with col3:
+                        st.metric("Min Predicted Sales", f"${batch_predictions.min():,.2f}")
+                    with col4:
+                        st.metric("Max Predicted Sales", f"${batch_predictions.max():,.2f}")
+            
+            except Exception as e:
+                st.error(f"Error processing file: {str(e)}")
+                st.info("Please ensure your CSV file has all required columns: " + ", ".join(model_info['features']))
+    
+    else:
+        st.error("⚠️ Unable to load model. Please ensure 'best_model_cv.pkl' and 'scaler_cv.pkl' are available.")
+
+# ============================================================================
+# PAGE 5: INSIGHTS
+# ============================================================================
+
+elif page == "📈 Insights":
+    st.title("📈 Key Insights & Findings")
+    
+    if df is not None and model_info is not None:
+        # Executive Summary
+        st.markdown("""
+            <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            padding: 30px; border-radius: 15px; color: white; margin-bottom: 30px;'>
+                <h2 style='margin: 0; color: white;'>🎯 Executive Summary</h2>
+                <p style='font-size: 18px; margin-top: 15px; line-height: 1.6;'>
+                    This machine learning project successfully predicts Walmart weekly sales with 
+                    <strong>{:.1f}% accuracy</strong> using advanced regression algorithms. 
+                    The <strong>{}</strong> emerged as the best performer after rigorous 
+                    cross-validation testing.
+                </p>
+            </div>
+        """.format(model_info['test_r2'] * 100, model_info['best_model']), unsafe_allow_html=True)
+        
+        # Key Findings
+        st.markdown("## 🔍 Key Findings")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+                <div class='success-box'>
+                    <h3>📊 Data Insights</h3>
+                    <ul>
+                        <li><strong>Seasonality:</strong> Q4 shows highest sales (holiday season)</li>
+                        <li><strong>Holiday Impact:</strong> Holiday weeks show significant sales variance</li>
+                        <li><strong>Store Variance:</strong> Top stores outperform bottom stores by 2-3x</li>
+                        <li><strong>Economic Factors:</strong> Unemployment and CPI show moderate correlation</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+                <div class='info-box'>
+                    <h3>🤖 Model Performance</h3>
+                    <ul>
+                        <li><strong>Best Algorithm:</strong> {}</li>
+                        <li><strong>Test Accuracy:</strong> {:.2f}% (R² score)</li>
+                        <li><strong>Cross-Validation:</strong> {:.4f} ± {:.4f}</li>
+                        <li><strong>Overfitting:</strong> {:.4f} (Good generalization)</li>
+                    </ul>
+                </div>
+            """.format(
+                model_info['best_model'],
+                model_info['test_r2'] * 100,
+                model_info['cv_r2_mean'],
+                model_info['cv_r2_std'],
+                model_info['overfitting_score']
+            ), unsafe_allow_html=True)
+        
+        # Visualizations
+        st.markdown("## 📊 Visual Insights")
+        
+        tab1, tab2, tab3 = st.tabs(["📅 Temporal Patterns", "🏪 Store Insights", "🎯 Feature Impact"])
+        
+        with tab1:
+            # Quarterly sales
+            quarterly = df.groupby('Quarter')['Weekly_Sales'].mean().reset_index()
+            quarterly['Quarter'] = quarterly['Quarter'].map({1: 'Q1', 2: 'Q2', 3: 'Q3', 4: 'Q4'})
+            
+            fig1 = px.bar(quarterly, x='Quarter', y='Weekly_Sales',
+                         title='Average Sales by Quarter',
+                         labels={'Weekly_Sales': 'Average Sales ($)', 'Quarter': 'Quarter'})
+            fig1.update_traces(marker_color=['#667eea', '#764ba2', '#f093fb', '#4caf50'])
+            fig1.update_layout(height=400)
+            st.plotly_chart(fig1, use_container_width=True)
+            
+            # Monthly trend
+            monthly = df.groupby('Month')['Weekly_Sales'].mean().reset_index()
+            month_names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            monthly['Month_Name'] = monthly['Month'].apply(lambda x: month_names[x-1])
+            
+            fig2 = px.line(monthly, x='Month_Name', y='Weekly_Sales',
+                          title='Average Sales by Month',
+                          labels={'Weekly_Sales': 'Average Sales ($)', 'Month_Name': 'Month'},
+                          markers=True)
+            fig2.update_traces(line_color='#667eea', line_width=3, marker_size=10)
+            fig2.update_layout(height=400)
+            st.plotly_chart(fig2, use_container_width=True)
+            
+            st.markdown("""
+                <div class='info-box'>
+                    <strong>Key Observation:</strong> Sales peak in Q4 (October-December) due to 
+                    holiday shopping, with November and December showing the highest weekly sales.
+                </div>
+            """, unsafe_allow_html=True)
+        
+        with tab2:
+            # Store performance distribution
+            store_stats = df.groupby('Store')['Weekly_Sales'].agg(['mean', 'std']).reset_index()
+            store_stats['CV'] = (store_stats['std'] / store_stats['mean']) * 100
+            
+            fig3 = px.scatter(store_stats, x='mean', y='CV', 
+                             hover_data=['Store'],
+                             title='Store Performance: Average Sales vs Variability',
+                             labels={'mean': 'Average Weekly Sales ($)', 
+                                   'CV': 'Coefficient of Variation (%)'},
+                             size='mean', color='CV',
+                             color_continuous_scale='Viridis')
+            fig3.update_layout(height=500)
+            st.plotly_chart(fig3, use_container_width=True)
+            
+            # Top vs Bottom stores
+            top_5 = df.groupby('Store')['Weekly_Sales'].mean().nlargest(5).reset_index()
+            bottom_5 = df.groupby('Store')['Weekly_Sales'].mean().nsmallest(5).reset_index()
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                fig4 = px.bar(top_5, x='Store', y='Weekly_Sales',
+                             title='Top 5 Performing Stores',
+                             labels={'Weekly_Sales': 'Avg Sales ($)', 'Store': 'Store'})
+                fig4.update_traces(marker_color='#4caf50')
+                fig4.update_layout(height=350)
+                st.plotly_chart(fig4, use_container_width=True)
+            
+            with col2:
+                fig5 = px.bar(bottom_5, x='Store', y='Weekly_Sales',
+                             title='Bottom 5 Performing Stores',
+                             labels={'Weekly_Sales': 'Avg Sales ($)', 'Store': 'Store'})
+                fig5.update_traces(marker_color='#f44336')
+                fig5.update_layout(height=350)
+                st.plotly_chart(fig5, use_container_width=True)
+        
+        with tab3:
+            # Feature correlations with target
+            numeric_cols = ['Temperature', 'Fuel_Price', 'CPI', 'Unemployment', 'Holiday_Flag']
+            available_cols = [col for col in numeric_cols if col in df.columns]
+            
+            correlations = df[available_cols + ['Weekly_Sales']].corr()['Weekly_Sales'].drop('Weekly_Sales')
+            corr_df = correlations.reset_index()
+            corr_df.columns = ['Feature', 'Correlation']
+            corr_df = corr_df.sort_values('Correlation', ascending=True)
+            
+            fig6 = px.bar(corr_df, x='Correlation', y='Feature', orientation='h',
+                         title='Feature Correlation with Weekly Sales',
+                         labels={'Correlation': 'Correlation Coefficient', 'Feature': ''})
+            colors = ['#4caf50' if x > 0 else '#f44336' for x in corr_df['Correlation']]
+            fig6.update_traces(marker_color=colors)
+            fig6.update_layout(height=400)
+            st.plotly_chart(fig6, use_container_width=True)
+            
+            st.markdown("""
+                <div class='info-box'>
+                    <strong>Interpretation:</strong><br>
+                    • Positive correlation: Feature increases → Sales increase<br>
+                    • Negative correlation: Feature increases → Sales decrease<br>
+                    • Correlation closer to ±1 indicates stronger relationship
+                </div>
+            """, unsafe_allow_html=True)
+        
+        # Recommendations
+        st.markdown("## 💡 Business Recommendations")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+                <div class='success-box'>
+                    <h3>📈 For High-Performing Stores</h3>
+                    <ul>
+                        <li>Maintain inventory levels during Q4</li>
+                        <li>Capitalize on holiday promotional opportunities</li>
+                        <li>Study success factors for replication</li>
+                        <li>Consider expansion in similar demographics</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+                <div class='info-box'>
+                    <h3>🎯 Inventory Management</h3>
+                    <ul>
+                        <li>Increase stock 20-30% before holidays</li>
+                        <li>Monitor weather forecasts for demand planning</li>
+                        <li>Adjust staffing based on predicted sales</li>
+                        <li>Optimize supply chain for peak seasons</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+                <div class='success-box'>
+                    <h3>📉 For Underperforming Stores</h3>
+                    <ul>
+                        <li>Analyze local economic factors</li>
+                        <li>Review pricing and promotional strategies</li>
+                        <li>Improve customer experience initiatives</li>
+                        <li>Consider store layout optimization</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("""
+                <div class='info-box'>
+                    <h3>🔮 Predictive Planning</h3>
+                    <ul>
+                        <li>Use model for weekly sales forecasting</li>
+                        <li>Plan promotional budgets based on predictions</li>
+                        <li>Optimize workforce scheduling</li>
+                        <li>Improve cash flow management</li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        # Future Work
+        st.markdown("## 🚀 Future Enhancements")
+        
+        st.markdown("""
+            <div class='info-box'>
+                <h3>Potential Improvements</h3>
+                <ul>
+                    <li>🔄 <strong>Real-time Updates:</strong> Integrate live data feeds for continuous model retraining</li>
+                    <li>📱 <strong>Mobile App:</strong> Develop iOS/Android apps for on-the-go predictions</li>
+                    <li>🌐 <strong>External Data:</strong> Incorporate social media trends, competitor pricing</li>
+                    <li>🧠 <strong>Deep Learning:</strong> Explore LSTM/Transformer models for time series</li>
+                    <li>📍 <strong>Geographic Analysis:</strong> Add location-based features (demographics, proximity)</li>
+                    <li>🎨 <strong>Product Categories:</strong> Build separate models for different departments</li>
+                    <li>⚡ <strong>AutoML:</strong> Implement automated model selection and hyperparameter tuning</li>
+                    <li>🔔 <strong>Alerts:</strong> Create anomaly detection for unusual sales patterns</li>
+                </ul>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Technical Details
+        st.markdown("## 🛠️ Technical Stack")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.markdown("""
+                <div class='metric-card'>
+                    <h4 style='color: white;'>Data Processing</h4>
+                    <p style='color: white;'>• Pandas<br>• NumPy<br>• Scikit-learn</p>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+                <div class='metric-card'>
+                    <h4 style='color: white;'>Visualization</h4>
+                    <p style='color: white;'>• Plotly<br>• Matplotlib<br>• Seaborn</p>
+                </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown("""
+                <div class='metric-card'>
+                    <h4 style='color: white;'>Deployment</h4>
+                    <p style='color: white;'>• Streamlit<br>• Joblib<br>• Python 3.x</p>
+                </div>
+            """, unsafe_allow_html=True)
+    
+    else:
+        st.error("⚠️ Unable to load data or model information.")
+
+# ============================================================================
+# FOOTER
+# ============================================================================
+
+st.markdown("---")
+st.markdown("""
+    <div style='text-align: center; color: #666; padding: 20px;'>
+        <p>🛒 Walmart Sales Prediction Dashboard</p>
+        <p>Built with Streamlit | Powered by Machine Learning</p>
+        <p>© 2024 - Data Science Project</p>
+    </div>
+""", unsafe_allow_html=True)
