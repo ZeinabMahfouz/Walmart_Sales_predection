@@ -1,8 +1,3 @@
-"""
-Walmart Sales Prediction - Interactive Streamlit App
-====================================================
-An attractive dashboard to showcase your machine learning work
-"""
 
 import streamlit as st
 import pandas as pd
@@ -300,6 +295,41 @@ if page == "🏠 Home":
         
     else:
         st.error("⚠️ Unable to load data or model. Please ensure all required files are present.")
+        
+        st.markdown("### 📋 Required Files Checklist:")
+        st.markdown("""
+        Your project folder should contain:
+        
+        **Data File (at least one):**
+        - `walmart_cleaned.csv` OR `Walmart.csv`
+        
+        **Model Files (all required):**
+        - `best_model_cv.pkl` - The trained model
+        - `scaler_cv.pkl` - Feature scaler
+        - `model_info_cv.json` - Model metadata
+        
+        **Optional:**
+        - `model_comparison_cv_results.csv` - Model comparison data
+        """)
+        
+        st.markdown("### 🔍 Troubleshooting:")
+        st.markdown("""
+        1. **Check if files exist**: Look in the sidebar for file status
+        2. **Run modeling script**: Make sure you've run the training script to generate model files
+        3. **File names**: Ensure files have exact names (case-sensitive)
+        4. **File location**: All files should be in the same folder as `app.py`
+        """)
+        
+        st.code("""
+# To generate model files, run:
+python walmart_modeling_pipeline.py
+
+# This will create:
+# - best_model_cv.pkl
+# - scaler_cv.pkl  
+# - model_info_cv.json
+# - model_comparison_cv_results.csv
+        """, language="bash")
 
 # ============================================================================
 # PAGE 2: DATA EXPLORATION
@@ -706,8 +736,25 @@ elif page == "🔮 Make Predictions":
                 'IsWeekend': [is_weekend]
             })
             
+            # Add WeekOfYear if it's in the required features
+            required_features = model_info['features']
+            
+            # Remove Log_Weekly_Sales if it's in features (it's the target!)
+            if 'Log_Weekly_Sales' in required_features:
+                required_features = [f for f in required_features if f != 'Log_Weekly_Sales']
+            
+            # Calculate WeekOfYear if needed
+            if 'WeekOfYear' in required_features and 'WeekOfYear' not in input_data.columns:
+                # Create date from year, month, day
+                try:
+                    date = pd.to_datetime(f'{year}-{month:02d}-{day:02d}')
+                    input_data['WeekOfYear'] = date.isocalendar().week
+                except:
+                    # Fallback: estimate from month
+                    input_data['WeekOfYear'] = ((month - 1) * 4) + 2
+            
             # Ensure columns match training features
-            input_data = input_data[model_info['features']]
+            input_data = input_data[required_features]
             
             # Scale the input
             input_scaled = scaler.transform(input_data)
