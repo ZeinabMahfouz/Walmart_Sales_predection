@@ -1,0 +1,28 @@
+{
+    "features": [
+        "Store",
+        "Holiday_Flag",
+        "Temperature",
+        "Fuel_Price",
+        "CPI",
+        "Unemployment",
+        "Year",
+        "Month",
+        "Day",
+        "Quarter",
+        "IsWeekend",
+        "WeekOfYear"
+    ],
+    "best_model": "Polynomial (deg=3)",
+    "best_params": {
+        "regressor__alpha": 0.1
+    },
+    "cv_r2_mean": 0.41386511961033035,
+    "cv_r2_std": 0.022045523140316353,
+    "test_r2": 0.4405505151383,
+    "test_rmse": 424534.10373041563,
+    "cv_folds": 5,
+    "train_size": 5148,
+    "test_size": 1287,
+    "overfitting_score": 0.02668539552796967
+}

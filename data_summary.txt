@@ -1,0 +1,10 @@
+Walmart Dataset - EDA Summary
+==================================================
+
+Total Records: 6435
+Date Range: 2010-02-05 00:00:00 to 2012-10-26 00:00:00
+Number of Stores: 45
+Total Sales: 6737218987.11
+Average Weekly Sales: 1046964.8775617715
+Missing Values: 0
+Features: 15
